@@ -43,12 +43,32 @@ def cal_hash(input_string):
 
 def get_wr_skey():
     """刷新cookie密钥"""
-    response = requests.post(RENEW_URL, headers=headers, cookies=cookies,
-                             data=json.dumps(COOKIE_DATA, separators=(',', ':')))
-    for cookie in response.headers.get('Set-Cookie', '').split(';'):
-        if "wr_skey" in cookie:
-            return cookie.split('=')[-1][:8]
-    return None
+    try:
+        response = requests.post(RENEW_URL, headers=headers, cookies=cookies,
+                                 data=json.dumps(COOKIE_DATA, separators=(',', ':')))
+        
+        # 检查响应状态
+        if response.status_code != 200:
+            return None
+        
+        # 优化Set-Cookie解析逻辑
+        set_cookie = response.headers.get('Set-Cookie', '')
+        if not set_cookie:
+            return None
+        
+        # 先按分号分割，查找包含wr_skey的部分
+        for cookie_part in set_cookie.split(';'):
+            cookie_part = cookie_part.strip()
+            if "wr_skey=" in cookie_part:
+                # 提取等号后面的值
+                wr_skey = cookie_part.split('=', 1)[1]
+                if len(wr_skey) >= 8:
+                    return wr_skey[:8]
+        
+        return None
+        
+    except Exception:
+        return None
 
 def fix_no_synckey():
     requests.post(FIX_SYNCKEY_URL, headers=headers, cookies=cookies,
