@@ -10,11 +10,11 @@ env:
 on:
   schedule:
     - cron: '0 1 * * *'
-   # - cron: '0 5 * * *'
-   # - cron: '0 9 * * *'
-   # - cron: '0 13 * * *'
-   # - cron: '0 17 * * *'
-   # - cron: '0 21 * * *'
+    - cron: '0 5 * * *'
+    - cron: '0 9 * * *'
+    - cron: '0 13 * * *'
+    - cron: '0 17 * * *'
+    - cron: '0 21 * * *'
   workflow_dispatch:  # 手动触发
 
 jobs:
